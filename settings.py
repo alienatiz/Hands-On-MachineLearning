@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 matplotlib.rcParams['axes.unicode_minus'] = False
 
 PROJECT_ROOT_DIR = "."
-CHAPTER_ID = "decision_trees"
+CHAPTER_ID = "loln"
 IMAGES_PATH = os.path.join(PROJECT_ROOT_DIR, "images", CHAPTER_ID)
 os.makedirs(IMAGES_PATH, exist_ok=True)
 
