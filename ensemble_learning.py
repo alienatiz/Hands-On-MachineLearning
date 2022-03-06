@@ -1,6 +1,7 @@
 import numpy as np
 from matplotlib.colors import ListedColormap
 from sklearn.datasets import make_moons
+from sklearn.datasets import load_iris
 from sklearn.ensemble import BaggingClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import VotingClassifier
@@ -105,3 +106,12 @@ accuracy_score(y_test, y_pred)
 print("accuracy_score of test set of bag_clf:", accuracy_score(y_test, y_pred))
 
 print("bag_clf.oob_decision_function_\n", bag_clf.oob_decision_function_)
+
+# 7.4 Random Forest (RF)
+# 7.4.1 Extra tree (Extremely randomized trees)
+# 7.4.2 Feature Importance
+iris = load_iris()
+rnd_clf = RandomForestClassifier(n_estimators=500, n_jobs=-1)
+rnd_clf.fit(iris["data"], iris["target"])
+for name, score in zip(iris["feature_names"], rnd_clf.feature_importances_):
+    print(name, score)
