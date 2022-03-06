@@ -107,7 +107,16 @@ print("accuracy_score of test set of bag_clf:", accuracy_score(y_test, y_pred))
 
 print("bag_clf.oob_decision_function_\n", bag_clf.oob_decision_function_)
 
+# 7.3 Random patch and random subspace
 # 7.4 Random Forest (RF)
+rnd_clf = RandomForestClassifier(n_estimators=500, max_leaf_nodes=16, n_jobs=-1)
+rnd_clf.fit(X_train, y_train)
+
+y_pred_rf = rnd_clf.predict(X_test)
+
+bag_clf = BaggingClassifier(
+    DecisionTreeClassifier(max_features="sqrt", max_leaf_nodes=16, n_estimators=500))
+
 # 7.4.1 Extra tree (Extremely randomized trees)
 # 7.4.2 Feature Importance
 iris = load_iris()
