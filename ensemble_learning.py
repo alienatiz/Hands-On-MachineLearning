@@ -1,7 +1,7 @@
 import numpy as np
 from matplotlib.colors import ListedColormap
-from sklearn.datasets import make_moons
 from sklearn.datasets import load_iris
+from sklearn.datasets import make_moons
 from sklearn.ensemble import BaggingClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import VotingClassifier
@@ -115,3 +115,7 @@ rnd_clf = RandomForestClassifier(n_estimators=500, n_jobs=-1)
 rnd_clf.fit(iris["data"], iris["target"])
 for name, score in zip(iris["feature_names"], rnd_clf.feature_importances_):
     print(name, score)
+
+# 7.5 Boosting
+# 7.5.1 Adaboost
+# 7.5.2 Gradient Boosting
