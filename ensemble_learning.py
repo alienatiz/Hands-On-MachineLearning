@@ -2,6 +2,7 @@ import numpy as np
 from matplotlib.colors import ListedColormap
 from sklearn.datasets import load_iris
 from sklearn.datasets import make_moons
+from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import BaggingClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import VotingClassifier
@@ -96,7 +97,7 @@ plt.show()
 # 7.2.2 Estimating obb
 bag_clf = BaggingClassifier(
     DecisionTreeClassifier(), n_estimators=500,
-    bootstrap=True, n_jobs=1, oob_score=True)
+    bootstrap=True, n_jobs=-1, oob_score=True)
 
 bag_clf.fit(X_train, y_train)
 print("oob score of bag_clf:", bag_clf.oob_score_)
@@ -107,15 +108,25 @@ print("accuracy_score of test set of bag_clf:", accuracy_score(y_test, y_pred))
 
 print("bag_clf.oob_decision_function_\n", bag_clf.oob_decision_function_)
 
+y_pred = bag_clf.predict(X_test)
+accuracy_score(y_test, y_pred)
+print("accuracy_score(y_test, y_pred)", accuracy_score(y_test, y_pred))
+
 # 7.3 Random patch and random subspace
 # 7.4 Random Forest (RF)
-rnd_clf = RandomForestClassifier(n_estimators=500, max_leaf_nodes=16, n_jobs=-1)
+rnd_clf = RandomForestClassifier(n_estimators=500, max_leaf_nodes=16, random_state=42)
 rnd_clf.fit(X_train, y_train)
 
 y_pred_rf = rnd_clf.predict(X_test)
 
 bag_clf = BaggingClassifier(
-    DecisionTreeClassifier(max_features="sqrt", max_leaf_nodes=16, n_estimators=500))
+    DecisionTreeClassifier(max_features="sqrt", max_leaf_nodes=16), n_estimators=500)
+
+bag_clf.fit(X_train, y_train)
+y_pred = bag_clf.predict(X_test)
+
+np.sum(y_pred == y_pred_rf) / len(y_pred)
+print(np.sum(y_pred == y_pred_rf) / len(y_pred))
 
 # 7.4.1 Extra tree (Extremely randomized trees)
 # 7.4.2 Feature Importance
@@ -127,4 +138,24 @@ for name, score in zip(iris["feature_names"], rnd_clf.feature_importances_):
 
 # 7.5 Boosting
 # 7.5.1 Adaboost
-# 7.5.2 Gradient Boosting
+ada_clf = AdaBoostClassifier(
+    DecisionTreeClassifier(max_depth=1), n_estimators=200,
+    algorithm="SAMME.R", learning_rate=0.5)
+ada_clf.fit(X_train, y_train)
+
+# # 7.5.2 Gradient Boosting
+#
+# tree_reg1 = DecisionTreeRegressor(max_depth=2)
+# tree_reg1.fit(X, y)
+#
+# y2 = y - tree_reg1.predict(X)
+# tree_reg2 = DecisionTreeRegressor(max_depth=2)
+# tree_reg2.fit(X, y2)
+#
+# y3 = y2 - tree_reg2.predict(X)
+# tree_reg3 = DecisionTreeRegressor(max_depth=2)
+# tree_reg3.fit(X, y3)
+#
+# X_new = np.array([[0.8]])
+# y_pred = sum(tree.predict(X_new) for tree in (tree_reg1, tree_reg2, tree_reg3))
+# print(y_pred)
