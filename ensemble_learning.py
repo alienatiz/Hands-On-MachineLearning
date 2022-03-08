@@ -344,3 +344,27 @@ for n_estimators in range(1, 120):
 
 print("gbrt.n_estimators:", gbrt.n_estimators)
 print("Minimum validation MSE:", min_val_error)
+
+# Using XGBoost
+try:
+    import xgboost
+except ImportError as ex:
+    print("error: xgboost library is not installed")
+    xgboost = None
+
+if xgboost is not None:
+    xgb_reg = xgboost.XGBRegressor(random_state=42)
+    xgb_reg.fit(X_train, y_train)
+    y_pred = xgb_reg.predict(X_val)
+    val_error = mean_squared_error(y_val, y_pred)
+    print("Validation MSE:", val_error)
+
+if xgboost is not None:
+    xgb_reg = xgboost.XGBRegressor(random_state=42)
+    xgb_reg.fit(X_train, y_train, eval_set=[(X_val, y_val)], early_stopping_rounds=2)
+    y_pred = xgb_reg.predict(X_val)
+    val_error = mean_squared_error(y_val, y_pred)
+    print("Validation MSE:", val_error)
+
+# %timeit xgboost.XGBRegressor().fit(X_train, y_train) if xgboost is not None else None
+# %timeit GradientBoostingRegressor().fit(X_train, y_train)
