@@ -169,7 +169,6 @@ ada_clf.fit(X_train, y_train)
 plot_decision_boundary(ada_clf, X, y)
 
 m = len(X_train)
-
 fig, axes = plt.subplots(ncols=2, figsize=(10, 4), sharey=True)
 for subplot, learning_rate in ((0, 1), (1, 0.5)):
     sample_weights = np.ones(m) / m
@@ -178,10 +177,10 @@ for subplot, learning_rate in ((0, 1), (1, 0.5)):
         svm_clf = SVC(kernel="rbf", C=0.2, gamma=0.6, random_state=42)
         svm_clf.fit(X_train, y_train, sample_weight=sample_weights * m)
         y_pred = svm_clf.predict(X_train)
-        r = sample_weights[y_pred != y_train].sum() / sample_weights.sum()  # equation 7-1
-        alpha = learning_rate * np.log((1 - r) / r)  # equation 7-2
-        sample_weights[y_pred != y_train] *= np.exp(alpha)  # equation 7-3
-        sample_weights /= sample_weights.sum()  # normalization step
+        r = sample_weights[y_pred != y_train].sum() / sample_weights.sum()
+        alpha = learning_rate * np.log((1 - r) / r)
+        sample_weights[y_pred != y_train] *= np.exp(alpha)
+        sample_weights /= sample_weights.sum()
         plot_decision_boundary(svm_clf, X, y, alpha=0.2)
         plt.title("learning_rate = {}".format(learning_rate), fontsize=16)
     if subplot == 0:
@@ -214,7 +213,7 @@ tree_reg3.fit(X, y3)
 
 X_new = np.array([[0.8]])
 y_pred = sum(tree.predict(X_new) for tree in (tree_reg1, tree_reg2, tree_reg3))
-print("y_pred\n", y_pred)
+print("y_pred:", y_pred)
 
 
 def plot_predictions(regressors, X, y, axes, label=None, style="r-", data_style="b.", data_label=None):
