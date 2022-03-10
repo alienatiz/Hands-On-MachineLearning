@@ -1,4 +1,5 @@
 import numpy as np
+import xgboost
 from matplotlib.colors import ListedColormap
 from sklearn.datasets import fetch_openml
 from sklearn.datasets import load_iris
@@ -287,7 +288,7 @@ save_fig("gbrt_learning_rate_plot")
 # plt.show()
 
 # Gradient Boosting with early stopping
-X_train, X_val, y_train, y_val = train_test_split(X, y, random_state=49)
+X_train, X_val, y_train, y_val = train_test_split(X, y, random_state=42)
 
 gbrt = GradientBoostingRegressor(max_depth=2, n_estimators=120, random_state=42)
 gbrt.fit(X_train, y_train)
@@ -345,25 +346,17 @@ print("gbrt.n_estimators:", gbrt.n_estimators)
 print("Minimum validation MSE:", min_val_error)
 
 # Using XGBoost
-try:
-    import xgboost
-except ImportError as ex:
-    print("error: xgboost library is not installed")
-    xgboost = None
+xgb_reg = xgboost.XGBRegressor(random_state=42)
+xgb_reg.fit(X_train, y_train)
+y_pred = xgb_reg.predict(X_val)
+val_error = mean_squared_error(y_val, y_pred)
+print("Validation MSE (non-early stopping):", val_error)
 
-if xgboost is not None:
-    xgb_reg = xgboost.XGBRegressor(random_state=42)
-    xgb_reg.fit(X_train, y_train)
-    y_pred = xgb_reg.predict(X_val)
-    val_error = mean_squared_error(y_val, y_pred)
-    print("Validation MSE:", val_error)
-
-if xgboost is not None:
-    xgb_reg = xgboost.XGBRegressor(random_state=42)
-    xgb_reg.fit(X_train, y_train, eval_set=[(X_val, y_val)], early_stopping_rounds=2)
-    y_pred = xgb_reg.predict(X_val)
-    val_error = mean_squared_error(y_val, y_pred)
-    print("Validation MSE:", val_error)
+xgb_reg = xgboost.XGBRegressor(random_state=42)
+xgb_reg.fit(X_train, y_train, eval_set=[(X_val, y_val)], early_stopping_rounds=2)
+y_pred = xgb_reg.predict(X_val)
+val_error = mean_squared_error(y_val, y_pred)
+print("Validation MSE (early stopping rounds=2):", val_error)
 
 # %timeit xgboost.XGBRegressor().fit(X_train, y_train) if xgboost is not None else None
 # %timeit GradientBoostingRegressor().fit(X_train, y_train)
