@@ -356,7 +356,7 @@ xgb_reg = xgboost.XGBRegressor(random_state=42)
 xgb_reg.fit(X_train, y_train, eval_set=[(X_val, y_val)], early_stopping_rounds=2)
 y_pred = xgb_reg.predict(X_val)
 val_error = mean_squared_error(y_val, y_pred)
-print("Validation MSE (early stopping rounds=2):", val_error)
+print("\nValidation MSE (early stopping rounds=2):", val_error)
 
 # %timeit xgboost.XGBRegressor().fit(X_train, y_train) if xgboost is not None else None
 # %timeit GradientBoostingRegressor().fit(X_train, y_train)
